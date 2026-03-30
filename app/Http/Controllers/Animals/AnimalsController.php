@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AnimalsController extends Controller
 {
-    // Show list of animals
+    /* Dzīvnieku skats */
     public function index()
     {
         $user = Auth::user();
@@ -19,6 +19,8 @@ class AnimalsController extends Controller
         if (!$user) {
             abort(404);
         }
+
+        /* Matching algoritms */
 
         $matchedIds = AnimalMatch::all()
             ->where('user_id', $user->id)
@@ -66,6 +68,7 @@ class AnimalsController extends Controller
         return view("animals.index", compact("animals"));
     }
 
+    /* Dzīvnieku like nospiešanas koda daļa */
     public function like(Request $request, AnimalLikeService $validator) {
         $animalMatch = $validator->validateLikeStore($request->all());
         $createdMatch = AnimalMatch::create([
