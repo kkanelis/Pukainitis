@@ -2,15 +2,17 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
+use Validator;
+use ValidationException;
 
 class AnimalLikeService
 {
-    public function validateLikeStore(array $data): array
+    public function validateLikeStore($data)
     {
-        return Validator::make($data, [
+        $val = Validator::make($data, [
             'animal_id' => ['required', 'exists:animals,id']
-        ])->validate(); 
+        ]);
+        
+        return $val->validate();
     }
 }

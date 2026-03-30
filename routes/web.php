@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\SessionController;
 use App\Http\Controllers\Animals\AnimalsController;
-use App\Http\Controllers\Animals\AnimalsMatchs;
+use App\Http\Controllers\Animals\AnimalsMatchsController;
 
 Route::get('/', function () {
     return view('home.home');
@@ -19,7 +19,8 @@ Route::middleware('auth')->group(function() {
     Route::get('/animal', [AnimalsController::class, 'index']);
     Route::post('/animals/like', [AnimalsController::class, 'like']);
 
-    Route::get("/animals", [AnimalsMatchsController::class])
+    Route::get("/animals", [AnimalsMatchsController::class, 'index']);
+    Route::delete("/animals/{id}", [AnimalsMatchsController::class, 'destroy']);
 
 });
 

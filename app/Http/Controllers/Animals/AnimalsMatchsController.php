@@ -5,17 +5,26 @@ namespace App\Http\Controllers\Animals;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\AnimalMatch;
+use Illuminate\Support\Facades\Auth;
 
-class AnimalsMatchs extends Controller
+class AnimalsMatchsController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $animalMatches = AnimalMatch::all();
-        dd($animalMatches);
-        return view("animals.animalsMatch.index", compact("animalMatches"));
+        $user = Auth::user();
+
+        if (!$user) {
+            abort(404);
+        }
+
+        $animalMatches = AnimalMatch::where('user_id', $user->id)
+            ->with(['animal.shelter'])
+            ->get();
+
+        return view("animals.matchlist", compact("animalMatches"));
     }
 
     /**
@@ -63,6 +72,16 @@ class AnimalsMatchs extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = Auth::user();
+
+        if (!$user) {
+            abort(404);
+        }
+
+        AnimalMatch::where('id', $id)
+            ->where('user_id', $user->id)
+            ->delete();
+
+        return redirect("/animals");
     }
 }

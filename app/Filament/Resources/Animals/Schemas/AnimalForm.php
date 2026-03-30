@@ -16,6 +16,10 @@ class AnimalForm
             ->components([
                 Select::make('shelter_id')->options(Shelter::all()->pluck('name', 'id'))->label("Patversme"),
                 TextInput::make('name')->required()->label("Vārds"),
+                Select::make("gender")->options([
+                    'male' => "Vīriešu pārstāvis",
+                    'female' => "Sieviešu pārstāvis",
+                ])->required()->label("Dzimums"),
                 TextInput::make('years')->numeric()->label("Gadi"),
                 Select::make('animal_type')->options([
                     'cat' => 'Kaķis',

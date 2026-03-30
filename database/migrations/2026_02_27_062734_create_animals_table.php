@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer("shelter_id");
             $table->string("name")->nullable();
+            $table->string("gender");
             $table->integer("years")->nullable();
             $table->string("animal_type")->nullable();
             $table->string("activity_level")->nullable();

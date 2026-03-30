@@ -2,96 +2,94 @@ class AnimalSwiper {
     constructor() {
         this.container = document.querySelector('.cards-stack');
         this.cards = document.querySelectorAll('.card');
-        this.currentIndex = 0;
+        this.idx = 0;
         this.startX = 0;
         this.startY = 0;
-        this.currentX = 0;
-        this.currentY = 0;
-        this.isDragging = false;
+        this.moveX = 0;
+        this.moveY = 0;
+        this.dragging = false;
 
-        this.init();
+        this.setup();
     }
 
-    init() {
+    setup() {
+        document.addEventListener('touchstart', (e) => this.start(e), false);
+        document.addEventListener('touchmove', (e) => this.move(e), false);
+        document.addEventListener('touchend', (e) => this.end(e), false);
 
-        document.addEventListener('touchstart', (e) => this.handleStart(e), false);
-        document.addEventListener('touchmove', (e) => this.handleMove(e), false);
-        document.addEventListener('touchend', (e) => this.handleEnd(e), false);
-
-        document.addEventListener('mousedown', (e) => this.handleStart(e), false);
-        document.addEventListener('mousemove', (e) => this.handleMove(e), false);
-        document.addEventListener('mouseup', (e) => this.handleEnd(e), false);
-        
+        document.addEventListener('mousedown', (e) => this.start(e), false);
+        document.addEventListener('mousemove', (e) => this.move(e), false);
+        document.addEventListener('mouseup', (e) => this.end(e), false);
     }
 
-    handleStart(e) {
+    start(e) {
         const card = e.target.closest('.card');
         if (!card || card !== this.getCurrentCard()) return;
 
-        this.isDragging = true;
+        this.dragging = true;
         this.startX = e.touches ? e.touches[0].clientX : e.clientX;
         this.startY = e.touches ? e.touches[0].clientY : e.clientY;
-        this.currentX = 0;
-        this.currentY = 0;
+        this.moveX = 0;
+        this.moveY = 0;
 
         card.classList.add('dragging');
     }
 
-    handleMove(e) {
-        if (!this.isDragging) return;
+    move(e) {
+        if (!this.dragging) return;
 
         const card = this.getCurrentCard();
-        const currentXPos = e.touches ? e.touches[0].clientX : e.clientX;
-        const currentYPos = e.touches ? e.touches[0].clientY : e.clientY;
+        const posX = e.touches ? e.touches[0].clientX : e.clientX;
+        const posY = e.touches ? e.touches[0].clientY : e.clientY;
 
-        this.currentX = currentXPos - this.startX;
-        this.currentY = currentYPos - this.startY;
+        this.moveX = posX - this.startX;
+        this.moveY = posY - this.startY;
 
-        const ratio = this.currentX / 300;
-        card.style.transform = `translateX(${this.currentX}px) rotate(${ratio * 20}deg)`;
-        card.style.opacity = 1 - Math.abs(ratio) * 0.5;
+        const rot = this.moveX / 300;
+        card.style.transform = `translateX(${this.moveX}px) rotate(${rot * 20}deg)`;
+        card.style.opacity = 1 - Math.abs(rot) * 0.5;
     }
 
-    handleEnd(e) {
-        if (!this.isDragging) return;
+    end(e) {
+        if (!this.dragging) return;
 
-        this.isDragging = false;
+        this.dragging = false;
         const card = this.getCurrentCard();
         card.classList.remove('dragging');
 
-        const threshold = 100;
+        const minSwipe = 100;
 
-        if (Math.abs(this.currentX) > threshold) {
-            this.swipeCard(this.currentX > 0 ? 'right' : 'left');
+        if (Math.abs(this.moveX) > minSwipe) {
+            this.swipe(this.moveX > 0 ? 'right' : 'left');
         } else {
             card.style.transform = '';
             card.style.opacity = '';
         }
     }
 
-    swipeCard(direction) {
+    swipe(dir) {
         const card = this.getCurrentCard();
         if (!card) return;
 
-        if (direction === 'right') {
-            const animalId = card.dataset.animalId;
-            this.sendLike(animalId);
+        if (dir === 'right') {
+            const id = card.dataset.animalId;
+            this.like(id);
         }
 
-        card.classList.add(`swipe-${direction}`);
+        card.classList.add(`swipe-${dir}`);
         
         setTimeout(() => {
             card.style.display = 'none';
-            this.currentIndex++;
-            this.updateStackOrder();
+            this.idx++;
+            this.rearrange();
 
-            if (this.currentIndex >= this.cards.length) {
-                this.showEmptyState();
+            if (this.idx >= this.cards.length) {
+                this.showEmpty();
             }
         }, 600);
     }
 
-    sendLike(animalId) {
+    like(animalId) {
         fetch('/animals/like', {
             method: 'POST',
             headers: {
@@ -102,16 +100,16 @@ class AnimalSwiper {
                 animal_id: animalId
             })
         })
-        .then(response => response.json())
+        .then(resp => resp.json())
     }
 
-    updateStackOrder() {
-        this.cards.forEach((card, index) => {
+    rearrange() {
+        this.cards.forEach((card, i) => {
             card.style.display = 'flex';
-            const offset = index - this.currentIndex;
-            if (offset >= 0) {
-                card.style.zIndex = 10 - offset;
-                card.style.transform = `translateY(${offset * 10}px) scale(${1 - offset * 0.05})`;
+            const off = i - this.idx;
+            if (off >= 0) {
+                card.style.zIndex = 10 - off;
+                card.style.transform = `translateY(${off * 10}px) scale(${1 - off * 0.05})`;
             } else {
                 card.style.display = 'none';
             }
@@ -119,10 +117,10 @@ class AnimalSwiper {
     }
 
     getCurrentCard() {
-        return this.cards[this.currentIndex];
+        return this.cards[this.idx];
     }
 
-    showEmptyState() {
+    showEmpty() {
         this.container.style.display = 'none';
         document.querySelector('.empty-state').style.display = 'block';
     }

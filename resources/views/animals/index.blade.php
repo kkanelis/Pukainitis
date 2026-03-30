@@ -6,7 +6,7 @@
             @foreach($animals as $index => $animal)
                 <div class="card" data-animal-id="{{ $animal->id }}">
                     <div class="card-image">
-                        <img src="{{ asset('storage/' . $animal->image_id) }}" alt="{{ $animal->name }}">
+                        <img src="{{ asset('storage/' . $animal->image_id) }}">
                     </div>
                     <div class="card-content">
                         <h2 class="card-name">{{ $animal->name }}</h2>
@@ -22,14 +22,28 @@
                         <div class="card-stats">
                             @if($animal->years)
                                 <div class="stat">
-                                    <span class="stat-icon">🎂 Gadi: </span>
-                                    <span> {{ $animal->years }} </span>
+                                    <span>🎂 <b style="color: Orange">Gadi:</b>  {{ $animal->years }} </span>
+                                </div>
+                            @endif
+                            @if ($animal->animal_type === 'cat')
+                                <div class="stat">
+                                    <span>🐱 <b style="color: Orange">Dzimums: </b> {{ $animal->gender === 'male' ? 'Runcis' : 'Kaķene' }} </span>
+                                </div>
+                            @endif
+                            @if ($animal->animal_type === 'dog')
+                                <div class="stat">
+                                    <span>🐶 <b style="color: Orange">Dzimums: </b> {{ $animal->gender === 'male' ? 'Suns' : 'Mātīte' }} </span>
+                                </div>
+                            @endif
+                            @if($animal->animal_type !== 'dog' && $animal->animal_type !== 'cat')
+                                <div class="stat">
+                                    <span>🐾 <b style="color: Orange">Dzimums: </b> {{ $animal->gender === 'male' ? 'Vīriešu pārstāvis' : 'Sieviešu pārstāvis' }} </span>
                                 </div>
                             @endif
                             @if($animal->activity_level)
                                 <div class="stat">
-                                    <span class="stat-icon">🏃‍♂️ Aktivitātes līmenis: </span>
                                     <span>
+                                        🏃‍♂️ <b style="color: Orange">Aktivitātes līmenis: </b>
                                         @if ($animal->activity_level == "low")
                                             Mierīgs
                                         @elseif ($animal->activity_level == "medium")
@@ -42,8 +56,8 @@
                             @endif
                             @if($animal->social_level)
                                 <div class="stat">
-                                    <span class="stat-icon">🌍 Sociālais līmenis: </span>
                                     <span>
+                                        🌍 <b style="color: Orange">Sociālais līmenis: </b>
                                         @if ($animal->activity_level == "low")
                                             Intraverts
                                         @elseif ($animal->activity_level == "medium")
@@ -56,8 +70,8 @@
                             @endif
                             @if($animal->sleep_type)
                                 <div class="stat">
-                                    <span class="stat-icon">🌞 Rīta tips: </span>
                                     <span>
+                                        🌞 <b style="color: Orange">Rīta tips: </b>
                                         @if ($animal->activity_level == "early")
                                             Agrais putns
                                         @elseif ($animal->activity_level == "late")
@@ -70,8 +84,8 @@
                             @endif
                             @if ($animal->life_style)
                                 <div class="stat">
-                                    <span class="stat-icon">🔖 Dzīves stils: </span>
                                     <span>
+                                        🔖 <b style="color: Orange">Dzīves stils: </b>
                                         @if ($animal->activity_level == "low")
                                             Mierīgs
                                         @elseif ($animal->activity_level == "medium")
@@ -84,8 +98,8 @@
                             @endif
                             @if($animal->temperament)
                                 <div class="stat">
-                                    <span class="stat-icon">🐣 Temperaments: </span>
                                     <span>
+                                        🐣 <b style="color: Orange">Temperaments: </b>
                                         @if ($animal->activity_level == "calm")
                                             Mierīgs
                                         @elseif ($animal->activity_level == "playful")
@@ -98,8 +112,8 @@
                             @endif
                             @if($animal->adventure_level)
                                 <div class="stat">
-                                    <span class="stat-icon">🌲 Piedzīvojumu līmenis: </span>
                                     <span>
+                                        🌲 <b style="color: Orange">Piedzīvojumu līmenis: </b>
                                         @if ($animal->activity_level == "low")
                                             Mazkustīgs
                                         @elseif ($animal->activity_level == "medium")

@@ -11,23 +11,21 @@ use Illuminate\Support\Facades\Auth;
 
 class AnimalsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Show list of animals
     public function index()
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
         if (!$user) {
             abort(404);
         }
 
-        $matchedAnimalIds = AnimalMatch::all()
+        $matchedIds = AnimalMatch::all()
             ->where('user_id', $user->id)
             ->pluck('animal_id')
             ->toArray();
 
-        $animals = Animal::whereNotIn('id', $matchedAnimalIds)
+        $animals = Animal::whereNotIn('id', $matchedIds)
             ->get()
             ->sortByDesc(function ($animal) use ($user) {
 

@@ -7,7 +7,9 @@
                 @if (Auth::user()->admin == 1)
                     <li class="nav-item"><a href="/admin" class="nav-link">Admin Panelis</a></li>
                 @endif
+                <li class="nav-item"><a href="/" class="nav-link">Sākums</a></li>
                 <li class="nav-item"><a href="/animal" class="nav-link">Meklēt savu pūkainīti</a></li>
+                <li class="nav-item"><a href="/animals" class="nav-link">Izvēlētie pūkianīši</a></li>
                 <li class="nav-item">
                     <form action="/logout" method="POST">
                         @csrf
